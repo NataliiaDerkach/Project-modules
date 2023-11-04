@@ -7,6 +7,10 @@ import jmp.dto.User;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.Optional;
+
 
 
 public class ServiceImpl implements Service {
@@ -27,12 +31,32 @@ public class ServiceImpl implements Service {
     @Override
     public Optional<Subscription> getSubscriptionByBankCardNumber(String number) {
 
-        return subscriptions.stream().filter(subscription -> subscription.getBankcard().equals(number)).findFirst();
+        return Optional.ofNullable(subscriptions.stream()
+                .filter(subscription -> subscription.getBankcard().equals(number))
+                .findFirst()
+                .orElseThrow(() -> new SubscriptionNotFoundException("Subscription not found for bank card: " + number)));
+
     }
 
     @Override
     public List<User> getAllUsers() {
         return new ArrayList<>(userCards.keySet());
+    }
+
+    @Override
+    public List<Subscription> getAllSubscriptionsByCondition(Predicate<Subscription> condition) {
+
+        List<Subscription> subscriptionsByCondition=subscriptions.stream()
+                        .filter(condition)
+                        .collect(Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                Collections::unmodifiableList
+
+                        ));
+        if(subscriptionsByCondition.isEmpty()){
+            throw new SubscriptionNotFoundException("Not found subscription, User doesn't met condition!");
+        }
+        return  subscriptionsByCondition;
     }
 
 

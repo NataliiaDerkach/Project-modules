@@ -10,6 +10,7 @@ public class BankImpl implements Bank {
 
     @Override
     public BankCard createBankCard(User user, BankCardType cardType) {
+
         if (BankCardType.CREDIT == cardType) {
             return new CreditBankCard(UUID.randomUUID().toString(), user);
         } else if (BankCardType.DEBIT == cardType) {

@@ -21,14 +21,6 @@ public class Subscription {
         return startDate;
     }
 
-    public void setBankcard(String bankcard) {
-        this.bankcard = bankcard;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
     @Override
     public String toString() {
         return "Subscription{" +
